@@ -56,6 +56,7 @@ logs/
 shared_volume/uploads/*
 shared_volume/models/*
 shared_volume/results/*
+shared_volume/images/*
 !shared_volume/uploads/.gitkeep
 !shared_volume/models/.gitkeep
 !shared_volume/results/.gitkeep
