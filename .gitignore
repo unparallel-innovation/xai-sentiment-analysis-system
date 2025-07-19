@@ -53,10 +53,9 @@ Thumbs.db
 logs/
 
 # Shared volume data (keep structure but ignore content)
-shared_volume/uploads/*
-shared_volume/models/*
-shared_volume/results/*
-shared_volume/images/*
+shared_volume/
+shared_data/
+finbert/
 !shared_volume/uploads/.gitkeep
 !shared_volume/models/.gitkeep
 !shared_volume/results/.gitkeep
