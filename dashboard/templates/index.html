@@ -233,45 +233,45 @@
             border: 1px solid #bfdbfe;
         }
         
-        .loading {
+        .loading-text {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #e2e8f0;
-            border-top: 2px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
             margin-right: 8px;
+            font-weight: 500;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .data-info {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 8px;
+        .data-summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
             padding: 16px;
-            margin: 16px 0;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        .data-info h4 {
-            color: #1e40af;
-            margin-bottom: 8px;
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .summary-label {
+            font-weight: 500;
+            opacity: 0.9;
             font-size: 0.875rem;
+        }
+        
+        .summary-value {
             font-weight: 600;
-        }
-        
-        .data-info p {
-            margin: 4px 0;
-            font-size: 0.75rem;
-            color: #374151;
-        }
-        
-        .hidden {
-            display: none;
+            font-size: 0.875rem;
+            text-align: right;
+            word-break: break-word;
         }
         
         /* Main Content */
@@ -279,6 +279,7 @@
             flex: 1;
             padding: 80px 24px 24px 24px;
             overflow-y: auto;
+            background: #f8fafc;
         }
         
         .content-header {
@@ -286,17 +287,18 @@
         }
         
         .content-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.875rem;
+            font-weight: 700;
             color: #1e293b;
             margin-bottom: 8px;
         }
         
         .content-header p {
             color: #64748b;
-            font-size: 0.875rem;
+            font-size: 1rem;
         }
         
+        /* Summary Statistics */
         .summary-stats {
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             border-radius: 16px;
@@ -309,6 +311,7 @@
         .summary-stats h3 {
             font-size: 1.25rem;
             font-weight: 600;
+            color: white;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
@@ -317,8 +320,8 @@
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
         }
         
         .stat-card {
@@ -347,22 +350,22 @@
             opacity: 0.8;
         }
         
-        .results-grid {
+        /* Results Container */
+        .results-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 24px;
-            margin-top: 24px;
+            margin-bottom: 32px;
         }
         
         .result-card {
-            background: #ffffff;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border-radius: 16px;
-            padding: 24px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            position: relative;
         }
         
         .result-card::before {
@@ -372,15 +375,15 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #3498db, #2c3e50);
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
         
         .result-card:hover {
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            transform: translateY(-4px);
-            border-color: #3498db;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+            border-color: rgba(59, 130, 246, 0.3);
         }
         
         .result-card:hover::before {
@@ -389,113 +392,109 @@
         
         .result-card img {
             width: 100%;
-            height: 280px;
+            height: 220px;
             object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            transition: transform 0.3s ease;
-            cursor: pointer;
+            border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+            transition: all 0.3s ease;
+            filter: brightness(1) contrast(1.05);
         }
         
         .result-card:hover img {
+            filter: brightness(1.05) contrast(1.1);
             transform: scale(1.02);
         }
         
         .result-card h4 {
-            font-size: 1.125rem;
-            font-weight: 600;
+            padding: 20px 24px 12px 24px;
+            font-size: 1.1rem;
+            font-weight: 700;
             color: #1e293b;
-            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            margin: 0;
         }
         
-        .result-card .card-icon {
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(135deg, #3498db, #2c3e50);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: bold;
+        .card-icon {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.2));
         }
         
-        .result-card .card-description {
-            color: #64748b;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            margin-bottom: 12px;
+        .card-description {
+            padding: 0 24px 16px 24px;
+            font-size: 0.9rem;
+            color: #475569;
+            line-height: 1.6;
+            font-weight: 500;
         }
         
-        .result-card .card-meta {
+        .card-meta {
+            padding: 16px 24px 20px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.75rem;
-            color: #94a3b8;
+            font-size: 0.8rem;
+            color: #64748b;
+            border-top: 1px solid rgba(241, 245, 249, 0.8);
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            font-weight: 600;
         }
         
-        /* Right Sidebar */
+        /* Right Sidebar - Chat */
         .right-sidebar {
-            width: 380px;
-            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            width: 360px;
+            background: #ffffff;
             border-left: 1px solid #e2e8f0;
-            height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 80px 0 0 0;
-            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+            height: 100vh;
         }
         
         .chat-header {
-            padding: 20px 24px 20px 24px;
+            padding: 20px;
             border-bottom: 1px solid #e2e8f0;
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
+            background: #f8fafc;
         }
         
         .chat-header h3 {
-            font-size: 1.125rem;
+            font-size: 1rem;
             font-weight: 600;
-            color: white;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: #1e293b;
+            margin-bottom: 4px;
         }
         
         .chat-header p {
             font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin: 0;
+            color: #64748b;
         }
         
         .chat-messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         
         .message {
-            margin-bottom: 16px;
+            max-width: 85%;
             padding: 12px 16px;
             border-radius: 12px;
-            max-width: 85%;
-            word-wrap: break-word;
-            position: relative;
+            font-size: 0.875rem;
+            line-height: 1.4;
         }
         
         .message.user {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: #3b82f6;
             color: white;
             margin-left: auto;
             border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
         }
         
         .message.bot {
@@ -531,25 +530,10 @@
             display: block;
         }
         
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-        
-        .typing-dot {
-            width: 6px;
-            height: 6px;
-            background: #64748b;
-            border-radius: 50%;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-        
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        
-        @keyframes typing {
-            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
-            40% { transform: scale(1); opacity: 1; }
+        .typing-text {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-style: italic;
         }
         
         .chat-input-container {
@@ -681,20 +665,21 @@
             <div class="sidebar-section">
                 <h3>Upload Sentiment Data</h3>
                 <div class="upload-card" id="dataUploadArea">
-                    <div class="upload-icon">📁</div>
+                    <div class="upload-icon">📄</div>
                     <div class="upload-title">Upload Sentiment Data File</div>
                     <div class="upload-description">Drag and drop your sentiment data file here or click to browse</div>
                     <input type="file" id="dataFile" class="file-input" accept=".csv,.json,.txt">
                 </div>
                 <div id="dataStatus"></div>
-                <div id="dataSummary" class="data-info" style="display: none;"></div>
             </div>
+            
+
             
             <!-- Target Selection -->
             <div class="sidebar-section" id="targetSelectionSection" style="display: none;">
                 <h3>Target Variable</h3>
                 <div class="preprocessing-option">
-                    <h4>🎯 Select Target Column</h4>
+                    <h4>Select Target Column</h4>
                     <select id="targetColumn" class="form-select">
                         <option value="">Select target column...</option>
                     </select>
@@ -704,7 +689,7 @@
             <!-- FinBERT Model -->
             <div class="sidebar-section">
                 <h3>FinBERT Model</h3>
-                <button class="action-btn success" onclick="downloadFinBERT()" id="finbertBtn">🤖 Download FinBERT Model</button>
+                <button class="action-btn success" onclick="downloadFinBERT()" id="finbertBtn">Download FinBERT Model</button>
                 <div id="finbertStatus"></div>
             </div>
             
@@ -714,7 +699,7 @@
                 <select id="exampleSelector" class="form-select">
                     <option value="">Select an example to analyze...</option>
                 </select>
-                <button class="action-btn warning" onclick="runXAI()" id="xaiBtn">🔍 Run XAI Analysis</button>
+                <button class="action-btn warning" onclick="runXAI()" id="xaiBtn">Run XAI Analysis</button>
                 <div id="xaiStatus"></div>
             </div>
         </div>
@@ -726,77 +711,85 @@
                 <p>View and analyze your explainable AI results</p>
             </div>
             
-            <!-- Summary Statistics Panel -->
+            <!-- Data Summary & Statistics Panel -->
             <div class="summary-stats" id="summaryStats" style="display: none;">
                 <h3>
                     <span style="font-size: 1.5rem;">📊</span>
-                    Analysis Summary
+                    Data Summary & Analysis Overview
                 </h3>
                 <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Dataset Shape</h4>
+                        <div class="stat-value" id="dataShape">-</div>
+                        <div class="stat-change">Rows × Columns</div>
+                    </div>
                     <div class="stat-card">
                         <h4>Total Visualizations</h4>
                         <div class="stat-value" id="totalViz">0</div>
                         <div class="stat-change">Generated today</div>
                     </div>
                     <div class="stat-card">
-                        <h4>Data Type</h4>
-                        <div class="stat-value" id="dataType">-</div>
-                        <div class="stat-change">Current analysis</div>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Model Type</h4>
-                        <div class="stat-value" id="modelType">-</div>
-                        <div class="stat-change">Active model</div>
+                        <h4>Columns</h4>
+                        <div class="stat-value" id="dataColumns">-</div>
+                        <div class="stat-change">Available features</div>
                     </div>
                     <div class="stat-card">
                         <h4>Confidence Score</h4>
                         <div class="stat-value" id="confidenceScore">-</div>
-                        <div class="stat-change">Average prediction</div>
+                        <div class="stat-change">Average accuracy</div>
                     </div>
                 </div>
             </div>
             
-            <div id="resultsContainer" class="results-grid"></div>
+            <!-- Results Container -->
+            <div class="results-container" id="resultsContainer">
+                <div style="text-align: center; padding: 40px; color: #64748b;">
+                    <h3>Welcome to EXTRA-BRAIN XAI Dashboard</h3>
+                    <p>Upload your sentiment data and download the FinBERT model to get started with explainable AI analysis.</p>
+                </div>
+            </div>
         </div>
         
         <!-- Right Sidebar - Chat -->
         <div class="right-sidebar">
             <div class="chat-header">
-                <h3>
-                    <span style="font-size: 1.25rem;">🤖</span>
-                    EXTRA-BRAIN AI Assistant
-                </h3>
-                <p>Ask questions about your XAI analysis results</p>
+                <h3>EXTRA-BRAIN AI Assistant</h3>
+                <p>Ask questions about your data and analysis</p>
             </div>
             
-            <div id="chatMessages" class="chat-messages">
-                <div id="typingIndicator" class="typing-indicator">
-                    <div class="typing-dots">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be added here -->
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-text">AI is thinking...</div>
             </div>
             
             <div class="chat-input-container">
                 <div class="chat-input">
-                    <input type="text" id="chatInput" placeholder="Ask a question about your XAI analysis..." onkeypress="handleChatKeyPress(event)">
+                    <input type="text" id="chatInput" placeholder="Ask a question about your data..." onkeypress="handleChatKeyPress(event)">
                     <button onclick="sendChatMessage()">Send</button>
                 </div>
                 
                 <div class="suggested-questions">
                     <h4>Suggested Questions</h4>
-                    <button class="question-btn" onclick="askQuestion('What are the most important words for sentiment?')">• What are the most important words for sentiment?</button>
-                    <button class="question-btn" onclick="askQuestion('How does FinBERT analyze sentiment?')">• How does FinBERT analyze sentiment?</button>
-                    <button class="question-btn" onclick="askQuestion('What patterns does the model identify?')">• What patterns does the model identify?</button>
-                    <button class="question-btn" onclick="askQuestion('Tell me about the dataset')">• Tell me about the dataset</button>
-                    <button class="question-btn" onclick="askQuestion('What visualizations are available?')">• What visualizations are available?</button>
+                    <button class="question-btn" onclick="askQuestion('What are the main sentiment patterns in my data?')">
+                        What are the main sentiment patterns in my data?
+                    </button>
+                    <button class="question-btn" onclick="askQuestion('Which words are most important for sentiment classification?')">
+                        Which words are most important for sentiment classification?
+                    </button>
+                    <button class="question-btn" onclick="askQuestion('How does the model explain its predictions?')">
+                        How does the model explain its predictions?
+                    </button>
+                    <button class="question-btn" onclick="askQuestion('What are the key insights from the XAI analysis?')">
+                        What are the key insights from the XAI analysis?
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
         let selectedDataType = 'sentiment';
         let uploadedData = null;
@@ -847,7 +840,7 @@
             formData.append('file', file);
             formData.append('data_type', selectedDataType);
             
-            statusElement.innerHTML = '<div class="status loading"><span class="loading"></span> Uploading and processing...</div>';
+            statusElement.innerHTML = '<div class="status loading"><span class="loading-text">Processing...</span> Uploading and processing...</div>';
             
             fetch(endpoint, {
                 method: 'POST',
@@ -862,14 +855,9 @@
                     
                     // Show data summary
                     if (data.data_summary) {
-                        const summaryDiv = document.getElementById('dataSummary');
-                        summaryDiv.innerHTML = `
-                            <h4>Data Summary:</h4>
-                            <p>• Shape: ${data.data_summary.shape}</p>
-                            <p>• Columns: ${data.data_summary.columns.join(', ')}</p>
-                            <p>• Data Type: Sentiment Analysis</p>
-                        `;
-                        summaryDiv.style.display = 'block';
+                        // Populate the consolidated data summary panel
+                        document.getElementById('dataShape').textContent = data.data_summary.shape;
+                        document.getElementById('dataColumns').textContent = data.data_summary.columns.length;
                         
                         // Show target selection section
                         showTargetSelection(data.data_summary);
@@ -915,7 +903,7 @@
             const statusElement = document.getElementById('finbertStatus');
             const btn = document.getElementById('finbertBtn');
             
-            statusElement.innerHTML = '<div class="status loading"><span class="loading"></span> Downloading FinBERT model...</div>';
+            statusElement.innerHTML = '<div class="status loading"><span class="loading-text">Processing...</span> Downloading FinBERT model...</div>';
             btn.disabled = true;
             btn.textContent = 'Downloading...';
             
@@ -931,10 +919,10 @@
                 if (data.error) {
                     statusElement.innerHTML = `<div class="status error">${data.error}</div>`;
                     btn.disabled = false;
-                    btn.textContent = '🤖 Download FinBERT Model';
+                    btn.textContent = 'Download FinBERT Model';
                 } else {
                     statusElement.innerHTML = `<div class="status success">${data.message}</div>`;
-                    btn.textContent = '✅ FinBERT Ready';
+                    btn.textContent = 'FinBERT Ready';
                     btn.className = 'action-btn success';
                     finbertModel = data.model_info;
                     
@@ -945,7 +933,7 @@
             .catch(error => {
                 statusElement.innerHTML = `<div class="status error">Download failed: ${error.message}</div>`;
                 btn.disabled = false;
-                btn.textContent = '🤖 Download FinBERT Model';
+                btn.textContent = 'Download FinBERT Model';
             });
         }
         
@@ -967,8 +955,8 @@
                     
                     examples.forEach((example, index) => {
                         const option = document.createElement('option');
-                        option.value = index;
-                        option.textContent = example.title || `Example ${index + 1}`;
+                        option.value = example.index;
+                        option.textContent = example.title || `Example ${example.index + 1}`;
                         selector.appendChild(option);
                     });
                 }
@@ -993,7 +981,10 @@
                 return;
             }
             
-            statusElement.innerHTML = '<div class="status loading"><span class="loading"></span> Running XAI analysis...</div>';
+            // Clear only XAI results, keep data statistics
+            clearXAIResults();
+            
+            statusElement.innerHTML = '<div class="status loading"><span class="loading-text">Processing...</span> Running XAI analysis...</div>';
             
             fetch('/api/run-xai', {
                 method: 'POST',
@@ -1025,7 +1016,8 @@
         // Load Data Statistics
         function loadDataStatistics() {
             const container = document.getElementById('resultsContainer');
-            container.innerHTML = '<div style="text-align: center; padding: 20px;"><span class="loading"></span> Loading data statistics...</div>';
+            // Clear previous results
+            container.innerHTML = '<div style="text-align: center; padding: 20px;"><span class="loading-text">Processing...</span> Loading data statistics...</div>';
             
             fetch('/api/data-statistics', {
                 method: 'POST',
@@ -1047,52 +1039,23 @@
             });
         }
         
+        // Display Data Statistics
         function displayDataStatistics(data) {
             const container = document.getElementById('resultsContainer');
             container.innerHTML = '';
             
-            // Update summary statistics
+            // Update summary stats
             updateSummaryStats(data);
             
             if (data.images && data.images.length > 0) {
-                // Add data info header
-                const infoCard = document.createElement('div');
-                infoCard.className = 'result-card';
-                infoCard.style.gridColumn = '1 / -1';
-                infoCard.innerHTML = `
-                    <h4 style="margin-bottom: 16px; color: #1e293b; display: flex; align-items: center; gap: 8px;">
-                        <div class="card-icon">📊</div>
-                        Data Statistics Results
-                    </h4>
-                    <div class="card-description">
-                        Comprehensive analysis of your dataset with detailed insights and visualizations.
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <div>
-                            <strong>Data Type:</strong> ${data.data_type || 'Sentiment Analysis'}
-                        </div>
-                        <div>
-                            <strong>User ID:</strong> ${data.user_id || 'Unknown'}
-                        </div>
-                        <div>
-                            <strong>Visualizations:</strong> ${data.images.length}
-                        </div>
-                    </div>
-                    <div class="card-meta">
-                        <span>Generated by EXTRA-BRAIN XAI</span>
-                        <span>${new Date().toLocaleDateString()}</span>
-                    </div>
-                `;
-                container.appendChild(infoCard);
-                
-                // Create visualization titles based on type
                 const visualizationTitles = {
-                    'overview': 'Data Overview & Comprehensive Insights',
-                    'sentiment_distribution': 'Sentiment Distribution (Titles)',
-                    'per_asset_sentiment': 'Per-Asset Sentiment (Titles)',
-                    'keyword_insights': 'Top 15 Keywords in Titles',
+                    'overview': 'Data Overview',
+                    'sentiment_distribution': 'Sentiment Distribution',
+                    'per_asset_sentiment': 'Per Asset Sentiment',
+                    'keyword_insights': 'Keyword Insights',
                     'word_sentiment_associations': 'Word Sentiment Associations',
-                    'asset_distribution': 'Top 20 Assets by Article Count'
+                    'asset_distribution': 'Asset Distribution',
+                    'data_quality': 'Data Quality - Text Length Distribution'
                 };
                 
                 data.images.forEach((item, index) => {
@@ -1121,18 +1084,34 @@
             }
         }
         
+        // Clear XAI Results
+        function clearXAIResults() {
+            const container = document.getElementById('resultsContainer');
+            // Remove only XAI-related cards, keep data statistics
+            const xaiCards = container.querySelectorAll('.result-card[data-type="xai"]');
+            xaiCards.forEach(card => card.remove());
+            
+            // Remove XAI header if it exists
+            const xaiHeader = container.querySelector('.result-card[data-type="xai-header"]');
+            if (xaiHeader) {
+                xaiHeader.remove();
+            }
+        }
+        
         // Display XAI Results
         function displayXAIResults(data) {
             const container = document.getElementById('resultsContainer');
-            // Don't clear the container - append XAI results to existing content
+            // Clear previous XAI results only
+            clearXAIResults();
             
             // Add XAI header
             const headerCard = document.createElement('div');
             headerCard.className = 'result-card';
+            headerCard.setAttribute('data-type', 'xai-header');
             headerCard.style.gridColumn = '1 / -1';
             headerCard.innerHTML = `
                 <h4 style="margin-bottom: 16px; color: #1e293b; display: flex; align-items: center; gap: 8px;">
-                    <div class="card-icon">🔍</div>
+                    <div class="card-icon"></div>
                     XAI Analysis Results
                 </h4>
                 <div class="card-description">
@@ -1141,9 +1120,6 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                     <div>
                         <strong>Model:</strong> FinBERT
-                    </div>
-                    <div>
-                        <strong>Analysis Type:</strong> Sentiment Analysis
                     </div>
                     <div>
                         <strong>Example Text:</strong> ${data.example_text ? data.example_text.substring(0, 50) + '...' : 'N/A'}
@@ -1179,6 +1155,7 @@
                     if (base64Image) {  // Only show if image exists
                         const card = document.createElement('div');
                         card.className = 'result-card';
+                        card.setAttribute('data-type', 'xai');
                         const title = visualizationTitles[key] || `${key.charAt(0).toUpperCase() + key.slice(1)} Analysis`;
                         const description = visualizationDescriptions[key] || 'XAI visualization';
                         card.innerHTML = `
@@ -1218,13 +1195,15 @@
                 'overview': '📊',
                 'sentiment_distribution': '📈',
                 'per_asset_sentiment': '🏢',
-                'keyword_insights': '🔍',
-                'word_sentiment_associations': '💬',
-                'asset_distribution': '📊',
-                'lime': '🔍',
+                'keyword_insights': '🔑',
+                'word_sentiment_associations': '🔗',
+                'asset_distribution': '📋',
+
+                'data_quality': '🔍',
+                'lime': '🍋',
                 'attention': '👁️',
-                'shap': '📊',
-                'confidence': '🎯'
+                'shap': '⚡',
+                'confidence': '📊'
             };
             return icons[type] || '📊';
         }
@@ -1237,6 +1216,7 @@
                 'keyword_insights': 'Most frequent and important keywords in the dataset',
                 'word_sentiment_associations': 'Words that drive positive and negative sentiment',
                 'asset_distribution': 'Distribution of articles across different assets',
+                'data_quality': 'Text length distribution analysis with statistical insights',
                 'lime': 'Local Interpretable Model-agnostic Explanations',
                 'attention': 'Attention weights showing model focus areas',
                 'shap': 'SHAP values for feature attribution analysis',
@@ -1248,8 +1228,6 @@
         function updateSummaryStats(data) {
             const summaryStats = document.getElementById('summaryStats');
             const totalViz = document.getElementById('totalViz');
-            const dataType = document.getElementById('dataType');
-            const modelType = document.getElementById('modelType');
             const confidenceScore = document.getElementById('confidenceScore');
             
             // Show summary stats
@@ -1257,12 +1235,18 @@
             
             // Update values
             totalViz.textContent = data.images ? data.images.length : 0;
-            dataType.textContent = data.data_type || 'Sentiment Analysis';
-            modelType.textContent = 'FinBERT';
             confidenceScore.textContent = '85.2%'; // Placeholder - could be calculated from actual data
+            
+            // Update other stats if they exist
+            if (data.data_shape) {
+                document.getElementById('dataShape').textContent = data.data_shape;
+            }
+            if (data.columns_count) {
+                document.getElementById('dataColumns').textContent = data.columns_count;
+            }
         }
         
-        function openImageModal(imageSrc, title) {
+                function openImageModal(imageSrc, title) {
             // Create modal for larger image view
             const modal = document.createElement('div');
             modal.style.cssText = `

@@ -44,6 +44,9 @@ else:
 # Global storage for vector database (in production, use a proper vector DB like Pinecone, Weaviate, etc.)
 user_vector_db = {}
 
+# Store conversation history for each user
+conversation_history = {}
+
 class VectorDatabase:
     """Simple in-memory vector database with user isolation"""
     
@@ -207,14 +210,14 @@ def create_analysis_context(results: Dict[str, Any], user_id: str) -> List[str]:
                 importance_doc += f"{feature}: {score}, "
             context_docs.append(importance_doc.rstrip(', '))
     
-    # SHAP Analysis Information
-    shap_doc = "SHAP Analysis: The analysis includes comprehensive SHAP (SHapley Additive exPlanations) visualizations that show feature importance, individual prediction explanations, and feature interactions. SHAP plots help understand how each feature contributes to model predictions."
-    context_docs.append(shap_doc)
+    # LIME Analysis Information
+    lime_doc = "LIME Analysis: The analysis includes LIME (Local Interpretable Model-agnostic Explanations) visualizations that show local feature importance for individual predictions. LIME helps understand which words or features are most important for specific sentiment predictions."
+    context_docs.append(lime_doc)
     
     # Visualization Summary
     if 'images' in results:
         viz_count = len(results['images'])
-        viz_doc = f"Visualizations: The analysis generated {viz_count} comprehensive visualizations including SHAP summary plots, feature importance charts, correlation heatmaps, performance metrics, and detailed model explanations."
+        viz_doc = f"Visualizations: The analysis generated {viz_count} comprehensive visualizations including LIME explanations, attention analysis plots, feature importance charts, correlation heatmaps, performance metrics, and detailed model explanations."
         context_docs.append(viz_doc)
         
         # Add specific visualization types
@@ -241,32 +244,32 @@ def create_analysis_context(results: Dict[str, Any], user_id: str) -> List[str]:
                 "Sentiment Trend Analysis",
                 "Confusion Matrix visualization",
                 "Word Cloud Analysis",
-                "SHAP Summary Plot for text features",
-                "SHAP Dependence Plots for top words",
-                "SHAP Force Plots for sentiment predictions",
-                "SHAP Waterfall Plot for text classification",
-                "SHAP Interaction Plot for sentiment analysis"
+                "LIME Explanation for individual predictions",
+                "Attention Analysis for transformer models",
+                "Word Sentiment Association plots",
+                "Feature Importance charts",
+                "Model Performance visualizations"
             ])
         
         if viz_types:
             viz_details = "Detailed Visualizations: " + ". ".join(viz_types) + "."
             context_docs.append(viz_details)
     
-    # SHAP summary (new)
-    if 'shap_summary' in results and results['shap_summary']:
-        shap_summary = results['shap_summary']
-        if 'top_features' in shap_summary and shap_summary['top_features']:
-            top_feats = shap_summary['top_features']
-            shap_doc = "Top SHAP Features: " + ", ".join([f"{f['feature']} (mean(|SHAP|)={f['mean_abs_shap']:.4f})" for f in top_feats])
-            context_docs.append(shap_doc)
+    # LIME analysis summary
+    if 'lime_analysis' in results and results['lime_analysis']:
+        lime_analysis = results['lime_analysis']
+        if 'top_features' in lime_analysis and lime_analysis['top_features']:
+            top_feats = lime_analysis['top_features']
+            lime_doc = "Top LIME Features: " + ", ".join([f"{f['feature']} (importance={f['importance']:.4f})" for f in top_feats])
+            context_docs.append(lime_doc)
             
-            # Add detailed SHAP analysis
-            shap_analysis = f"SHAP Analysis Details: Analyzed {shap_summary.get('total_features_analyzed', 0)} features using {shap_summary.get('explainer_type', 'Unknown')} explainer. Sample size: {shap_summary.get('sample_size', 0)}. "
-            shap_analysis += f"Top feature '{top_feats[0]['feature']}' has the highest mean absolute SHAP value ({top_feats[0]['mean_abs_shap']:.4f}), indicating it has the strongest influence on model predictions."
-            context_docs.append(shap_analysis)
-        elif 'error' in shap_summary:
-            shap_doc = f"SHAP Analysis Error: {shap_summary['error']}"
-            context_docs.append(shap_doc)
+            # Add detailed LIME analysis
+            lime_details = f"LIME Analysis Details: Analyzed {lime_analysis.get('total_features_analyzed', 0)} features for local explanations. "
+            lime_details += f"Top feature '{top_feats[0]['feature']}' has the highest importance ({top_feats[0]['importance']:.4f}), indicating it has the strongest influence on this specific prediction."
+            context_docs.append(lime_details)
+        elif 'error' in lime_analysis:
+            lime_doc = f"LIME Analysis Error: {lime_analysis['error']}"
+            context_docs.append(lime_doc)
     
     # Visualization descriptions
     if 'images' in results:
@@ -323,10 +326,14 @@ def store_results_in_vector_db(results: Dict[str, Any], user_id: str):
             visualizations = data_stats.get('visualizations', [])
             
             data_doc = f"Data Statistics Analysis: Data type: {data_type}. "
-            data_doc += "Analysis includes: word sentiment associations, keyword insights, sentiment distribution, per-asset sentiment analysis, and comprehensive data overview. "
-            data_doc += "Word sentiment analysis shows the top 10 words driving positive and negative sentiment in the dataset. "
-            data_doc += "Keyword insights show the most frequent words in article titles. "
-            data_doc += "Asset-specific analysis shows sentiment patterns by financial asset/ticker."
+            data_doc += "Analysis includes: comprehensive data overview, sentiment distribution histogram, per-asset sentiment boxplots, keyword frequency analysis, word sentiment associations, asset distribution charts, and text length distribution. "
+            data_doc += "Data Overview: Shows dataset statistics including total articles, average title length, date range, distinct assets, and column information. "
+            data_doc += "Sentiment Distribution: Histogram showing the distribution of sentiment scores across all articles with neutral (0) as reference point. "
+            data_doc += "Per-Asset Sentiment: Boxplot analysis showing sentiment patterns for the top 25 assets by article count. "
+            data_doc += "Keyword Insights: Horizontal bar chart showing the top 15 most frequent words in article titles. "
+            data_doc += "Word Sentiment Associations: Two-panel chart showing top 10 words driving positive sentiment (green bars) and negative sentiment (red bars) with exact scores. "
+            data_doc += "Asset Distribution: Horizontal bar chart showing the top 20 assets by article count. "
+            data_doc += "Text Length Distribution: Histogram showing the distribution of article title lengths with mean, median, and standard deviation markers. "
             data_doc += f" Visualizations generated: {', '.join(visualizations)}."
             
             # Add actual plot data to the document
@@ -449,7 +456,29 @@ def store_results_in_vector_db(results: Dict[str, Any], user_id: str):
                             vector_db.add_document(user_id, image_doc, metadata)
         
         elif result_type == 'xai_analysis':
-            # Store XAI analysis results
+            # Clear previous XAI results for this user
+            if user_id in vector_db.collections:
+                # Remove old XAI-related documents
+                old_docs = []
+                old_embeddings = []
+                old_metadata = []
+                
+                for i, metadata_doc in enumerate(vector_db.collections[user_id]['metadata']):
+                    if metadata_doc.get('doc_type') in ['xai_analysis', 'xai_visualization']:
+                        # Skip this document (don't add to new lists)
+                        continue
+                    else:
+                        # Keep this document
+                        old_docs.append(vector_db.collections[user_id]['documents'][i])
+                        old_embeddings.append(vector_db.collections[user_id]['embeddings'][i])
+                        old_metadata.append(metadata_doc)
+                
+                # Replace the collection with only non-XAI documents
+                vector_db.collections[user_id]['documents'] = old_docs
+                vector_db.collections[user_id]['embeddings'] = old_embeddings
+                vector_db.collections[user_id]['metadata'] = old_metadata
+            
+            # Store new XAI analysis results
             xai_data = results.get('visualizations', {})
             example_index = results.get('example_index', 'N/A')
             model_type = results.get('model_type', 'N/A')
@@ -457,6 +486,17 @@ def store_results_in_vector_db(results: Dict[str, Any], user_id: str):
             xai_doc = f"XAI Analysis Results: Example index: {example_index}. "
             xai_doc += f"Model type: {model_type}. "
             xai_doc += f"Visualizations generated: {', '.join(xai_data.keys()) if isinstance(xai_data, dict) else 'multiple visualizations'}. "
+            
+            # Add specific descriptions for each visualization type
+            if 'lime' in xai_data and xai_data['lime']:
+                xai_doc += "LIME Analysis: Local Interpretable Model-agnostic Explanations showing which words are most important for the specific sentiment prediction. "
+                xai_doc += "LIME highlights the top contributing words that drive the model's decision for this particular text example. "
+            
+            if 'attention' in xai_data and xai_data['attention']:
+                xai_doc += "Attention Analysis: Shows attention weights from the transformer model, highlighting which words the model focuses on when making predictions. "
+            
+            if 'confidence' in xai_data and xai_data['confidence']:
+                xai_doc += "Prediction Confidence: Visualizes the confidence levels of the model's predictions across different sentiment categories. "
             
             metadata = {
                 'user_id': user_id,
@@ -522,6 +562,38 @@ def store_results_in_vector_db(results: Dict[str, Any], user_id: str):
     except Exception as e:
         print(f"Error storing results in vector database: {e}")
 
+def add_to_conversation_history(user_id: str, question: str, answer: str):
+    """Add a question-answer pair to user's conversation history"""
+    if user_id not in conversation_history:
+        conversation_history[user_id] = []
+    
+    conversation_history[user_id].append({
+        'question': question,
+        'answer': answer,
+        'timestamp': datetime.now().isoformat()
+    })
+    
+    # Keep only last 10 exchanges to prevent context from getting too long
+    if len(conversation_history[user_id]) > 10:
+        conversation_history[user_id] = conversation_history[user_id][-10:]
+
+def get_conversation_context(user_id: str) -> str:
+    """Get recent conversation context for a user"""
+    if user_id not in conversation_history or not conversation_history[user_id]:
+        return ""
+    
+    context_parts = []
+    for exchange in conversation_history[user_id][-5:]:  # Last 5 exchanges
+        context_parts.append(f"Previous Q: {exchange['question']}")
+        context_parts.append(f"Previous A: {exchange['answer']}")
+    
+    return "\n".join(context_parts)
+
+def clear_conversation_history(user_id: str):
+    """Clear conversation history for a user"""
+    if user_id in conversation_history:
+        del conversation_history[user_id]
+
 def generate_rag_response(question: str, user_id: str) -> str:
     """Generate response using RAG approach"""
     try:
@@ -538,23 +610,30 @@ def generate_rag_response(question: str, user_id: str) -> str:
         # Build context from relevant documents
         context = "\n".join([doc['text'] for doc in relevant_docs])
         
+        # Get conversation history
+        conversation_context = get_conversation_context(user_id)
+        
         print(f"DEBUG: Context length: {len(context)} characters")
         print(f"DEBUG: Context preview: {context[:200]}...")
+        print(f"DEBUG: Conversation context length: {len(conversation_context)} characters")
         
         # Create system prompt
         system_prompt = """You are an AI assistant specialized in Explainable AI (XAI) analysis. 
         You help users understand their machine learning models, feature importance, predictions, and performance metrics.
         Always provide clear, helpful explanations based on the context provided.
         If you don't have enough information to answer a question, say so politely.
-        When discussing sentiment analysis, be specific about word importance and their impact on sentiment predictions."""
+        When discussing sentiment analysis, be specific about word importance and their impact on sentiment predictions.
+        You have access to previous conversation context, so you can build on previous questions and answers."""
         
-        # Create user prompt with context
-        user_prompt = f"""Based on the following analysis context, please answer this question: {question}
+        # Create user prompt with context and conversation history
+        user_prompt = f"""Based on the following analysis context and conversation history, please answer this question: {question}
 
 Analysis Context:
 {context}
 
-Please provide a clear, helpful response based on the context above. If the context contains specific data (like word sentiment analysis, attention scores, performance metrics), use that information in your response. Do NOT mention SHAP analysis as it is not available in this system."""
+{conversation_context if conversation_context else ""}
+
+Please provide a clear, helpful response based on the context above. If the context contains specific data (like word sentiment analysis, attention scores, performance metrics), use that information in your response. You can reference previous questions and build on the conversation. Do NOT mention SHAP analysis as it is not available in this system."""
         
         print(f"DEBUG: Using OpenAI: {openai is not None}")
         
@@ -941,6 +1020,9 @@ def chat():
         # Generate RAG response
         answer = generate_rag_response(question, user_id)
         
+        # Store conversation history
+        add_to_conversation_history(user_id, question, answer)
+        
         return jsonify({
             'answer': answer,
             'user_id': user_id
@@ -955,6 +1037,9 @@ def clear_user_data(user_id):
     try:
         if user_id in vector_db.collections:
             del vector_db.collections[user_id]
+        
+        # Clear conversation history
+        clear_conversation_history(user_id)
         
         # Also clear user's image folder
         user_images_folder = os.path.join(IMAGES_FOLDER, user_id)
