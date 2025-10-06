@@ -60,6 +60,16 @@ finbert/
 !shared_volume/models/.gitkeep
 !shared_volume/results/.gitkeep
 
+# Large model files (exceed GitHub's 100MB limit)
+*.bin
+*.safetensors
+*.h5
+*.pkl
+*.joblib
+**/blobs/**
+**/snapshots/**
+**/models--ProsusAI--finbert/**
+
 # Environment variables
 .env
 .env.local
