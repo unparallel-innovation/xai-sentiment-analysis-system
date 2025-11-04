@@ -11,7 +11,7 @@
             --bg-color: rgb(var(--bg-color-value));
             --bg-color-transparency: rgba(var(--bg-color-value), 0.5);
             --gray: #cbd5e1;
-            --gray-fark: #666666;
+            --gray-dark: #666666;
             --bg-light-color-value: 235, 238, 245;
             --bg-light-color: rgb(var(--bg-light-color-value));
             --bg-light-color-transparency: rgba(var(--bg-light-color-value), 0.5);
@@ -20,7 +20,8 @@
             --info-card-color: rgb(var(--info-card-color-value));
             --info-card-color-transparency: rgba(var(--info-card-color-value), 0.5);
 
-
+            --success-color-value: 140, 198, 63;
+            --success-color: rgb(var(--success-color-value));
         }
 
 
@@ -110,6 +111,11 @@
             text-decoration: none;
         }
 
+        body.theme-extra-brain .message-text {
+            color: var(--gray-dark);
+        }
+
+
         .logout-btn:hover {
             background: #dc2626;
             transform: translateY(-1px);
@@ -139,6 +145,14 @@
             border: none;
         }
 
+        body.theme-extra-brain .left-sidebar .sidebar-section:not(:first-child) h3 {
+            border-top: 1px solid var(--bg-light-color-transparency);
+            padding-top: 1rem;
+            margin: 0px -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
         .sidebar-section {
             margin-bottom: 32px;
         }
@@ -157,6 +171,7 @@
         body.theme-extra-brain .sidebar-section h3 {
             color: var(--gray);
             font-weight: 400;
+            border: none;
         }
 
         .welcome {
@@ -247,6 +262,10 @@
             margin-top: 8px;
         }
 
+        body.theme-extra-brain .action-btn {
+            border-radius: 100px;
+        }
+
         .action-btn:hover {
             background: #2563eb;
             transform: translateY(-1px);
@@ -259,7 +278,11 @@
         }
 
         .action-btn.success {
-            background: #10b981;
+            background: var(--success-color);
+        }
+
+        body.theme-extra-brain .action-btn.success {
+            background: #8CC63F;
         }
 
         .action-btn.success:hover {
@@ -292,10 +315,18 @@
             font-weight: 500;
         }
 
+        body.theme-extra-brain .status {}
+
         .status.success {
             background: #dcfce7;
             color: #166534;
             border: 1px solid #bbf7d0;
+        }
+
+        body.theme-extra-brain .status.success {
+            color: white;
+            background: var(--success-color);
+            border: none;
         }
 
         .status.error {
@@ -410,6 +441,10 @@
             fill: white;
         }
 
+        .upload-icon .svg-icon {
+            fill: #374151;
+        }
+
         body.theme-extra-brain .svg-icon {
             fill: var(--info-card-color);
         }
@@ -502,6 +537,11 @@
             position: relative;
         }
 
+        body.theme-extra-brain .result-card {
+            background: var(--bg-light-color);
+            border-radius: 2rem;
+        }
+
         .result-card::before {
             content: '';
             position: absolute;
@@ -533,6 +573,11 @@
             filter: brightness(1) contrast(1.05);
         }
 
+        body.theme-extra-brain .result-card img {
+            border-bottom-left-radius: 2rem;
+            border-bottom-right-radius: 2rem;
+        }
+
         .result-card:hover img {
             filter: brightness(1.05) contrast(1.1);
             transform: scale(1.02);
@@ -548,6 +593,12 @@
             gap: 12px;
             background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
             margin: 0;
+        }
+
+        body.theme-extra-brain .result-card h4 {
+            color: var(--bg-color);
+            font-weight: 400;
+            background: transparent;
         }
 
         .card-icon {
@@ -567,6 +618,11 @@
             font-weight: 500;
         }
 
+        body.theme-extra-brain .card-description {
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
         .card-meta {
             padding: 16px 24px 20px 24px;
             display: flex;
@@ -577,6 +633,14 @@
             border-top: 1px solid rgba(241, 245, 249, 0.8);
             background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
             font-weight: 600;
+        }
+
+        body.theme-extra-brain .card-meta {
+            background: transparent;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 400;
+            padding-bottom: 0.5rem;
         }
 
         /* Right Sidebar - Chat */
@@ -858,7 +922,7 @@
                 <div class="upload-card" id="dataUploadArea">
                     <div class="upload-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" width="40" height="40"
-                            fill="currentColor" class="bi bi-filetype-svg" viewBox="0 0 16 16">
+                            class="bi bi-filetype-svg" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
                                 d="M14 4.5V14a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM0 14.841a1.13 1.13 0 0 0 .401.823q.194.162.478.252.285.091.665.091.507 0 .858-.158.355-.158.54-.44a1.17 1.17 0 0 0 .187-.656q0-.336-.135-.56a1 1 0 0 0-.375-.357 2 2 0 0 0-.565-.21l-.621-.144a1 1 0 0 1-.405-.176.37.37 0 0 1-.143-.299q0-.234.184-.384.187-.152.513-.152.214 0 .37.068a.6.6 0 0 1 .245.181.56.56 0 0 1 .12.258h.75a1.1 1.1 0 0 0-.199-.566 1.2 1.2 0 0 0-.5-.41 1.8 1.8 0 0 0-.78-.152q-.44 0-.776.15-.337.149-.528.421-.19.273-.19.639 0 .302.123.524t.351.367q.229.143.54.213l.618.144q.31.073.462.193a.39.39 0 0 1 .153.326.5.5 0 0 1-.085.29.56.56 0 0 1-.256.193q-.167.07-.413.07-.176 0-.32-.04a.8.8 0 0 1-.248-.115.58.58 0 0 1-.255-.384zm4.575 1.09h.952l1.327-3.999h-.879l-.887 3.138H5.05l-.897-3.138h-.917zm5.483-3.293q.114.228.14.492h-.776a.8.8 0 0 0-.096-.249.7.7 0 0 0-.17-.19.7.7 0 0 0-.237-.126 1 1 0 0 0-.3-.044q-.427 0-.664.302-.235.3-.235.85v.497q0 .352.097.616a.9.9 0 0 0 .305.413.87.87 0 0 0 .518.146 1 1 0 0 0 .457-.097.67.67 0 0 0 .273-.263q.09-.164.09-.364v-.254h-.823v-.59h1.576v.798q0 .29-.096.55a1.3 1.3 0 0 1-.293.457 1.4 1.4 0 0 1-.495.314q-.296.111-.698.111a2 2 0 0 1-.752-.132 1.45 1.45 0 0 1-.534-.377 1.6 1.6 0 0 1-.319-.58 2.5 2.5 0 0 1-.105-.745v-.507q0-.54.199-.949.202-.406.583-.633.383-.228.926-.228.357 0 .635.1.282.1.48.275.2.176.314.407" />
                         </svg>
@@ -1270,20 +1334,23 @@
 
                 data.images.forEach((item, index) => {
                     const card = document.createElement('div');
-                    card.className = 'result-card';
                     const title = visualizationTitles[item.type] || `Visualization ${index + 1}`;
+                    card.style = "cursor:pointer"
+                    card.onclick = () => openImageModal(`data:image/png;base64,${item.image}`, title)
+                    card.className = 'result-card';
+
                     const description = getVisualizationDescription(item.type);
                     card.innerHTML = `
-                        <img src="data:image/png;base64,${item.image}" alt="${title}" style="cursor: pointer;" onclick="openImageModal('data:image/png;base64,${item.image}', '${title}')">
+                        <img src="data:image/png;base64,${item.image}" alt="${title}">
                         <h4>
-                            <div class="card-icon">${getVisualizationIcon(item.type)}</div>
+                             <!--<div class="card-icon">${getVisualizationIcon(item.type)}</div>-->
                             ${title}
                         </h4>
                         <div class="card-description">
                             ${description}
                         </div>
                         <div class="card-meta">
-                            <span>EXTRA-BRAIN XAI</span>
+                           <!-- <span>EXTRA-BRAIN XAI</span>-->
                             <span>Click to enlarge</span>
                         </div>
                     `;
@@ -1557,7 +1624,7 @@
             const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
             messageDiv.innerHTML = `
-                <div>${text}</div>
+                <div class="message-text">${text}</div>
                 <div class="message-time">${timestamp}</div>
             `;
 
