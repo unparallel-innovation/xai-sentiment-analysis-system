@@ -16,6 +16,9 @@ CORS(app)
 XAI_SERVICE_URL = os.environ.get('XAI_SERVICE_URL', 'http://xai_service:8000')
 AI_OUTPUTS_SERVICE_URL = os.environ.get('AI_OUTPUTS_SERVICE_URL', 'http://ai_outputs:8001')
 SHARED_DATA_DIR = '/app/shared_data'
+
+LOGGED_IN_USER = os.environ.get("LOGGED_IN_USER")
+BODY_CLASS_NAME = os.environ.get("BODY_CLASS_NAME")
 UPLOAD_FOLDER = os.path.join(SHARED_DATA_DIR, 'uploads')
 MODELS_FOLDER = os.path.join(SHARED_DATA_DIR, 'models')
 RESULTS_FOLDER = os.path.join(SHARED_DATA_DIR, 'results')
@@ -33,9 +36,11 @@ USERS = {
 
 @app.route('/')
 def index():
+    if LOGGED_IN_USER != None:
+        session['user_id'] = LOGGED_IN_USER
     if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('index.html')
+       return redirect(url_for('login'))
+    return render_template('index.html',body_class_name=BODY_CLASS_NAME or "")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
