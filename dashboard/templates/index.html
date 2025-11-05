@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EXTRA-BRAIN - XAI Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <style>
         :root {
             --bg-color-value: 0, 32, 94;
@@ -115,6 +116,9 @@
             color: var(--gray-dark);
         }
 
+        body.theme-extra-brain .preprocessing-option h4 {
+            display: none;
+        }
 
         .logout-btn:hover {
             background: #dc2626;
@@ -264,6 +268,10 @@
 
         body.theme-extra-brain .action-btn {
             border-radius: 100px;
+            width: auto;
+            background: transparent !important;
+            border: 1px solid var(--info-card-color);
+            color: var(--info-card-color);
         }
 
         .action-btn:hover {
@@ -298,13 +306,20 @@
         }
 
         .form-select {
+            --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23666666' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
             width: 100%;
             padding: 8px 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             font-size: 0.875rem;
-            background: white;
             margin-bottom: 12px;
+        }
+
+        body.theme-extra-brain .form-select {
+            --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ebeef5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-color: transparent;
+            color: var(--bg-light-color);
+            border-radius: 100px;
         }
 
         .status {
@@ -315,7 +330,7 @@
             font-weight: 500;
         }
 
-        body.theme-extra-brain .status {}
+
 
         .status.success {
             background: #dcfce7;
@@ -345,6 +360,10 @@
             display: inline-block;
             margin-right: 8px;
             font-weight: 500;
+        }
+
+        body.theme-extra-brain .loading-text-container {
+            color: var(--gray);
         }
 
         .data-summary-card {
@@ -1291,8 +1310,7 @@
         function loadDataStatistics() {
             const container = document.getElementById('resultsContainer');
             // Clear previous results
-            container.innerHTML = '<div style="text-align: center; padding: 20px;"><span class="loading-text">Processing...</span> Loading data statistics...</div>';
-
+            container.innerHTML = '<div style="text-align: center; padding: 20px;" class="loading-text-container"><span class="loading-text">Processing...</span> Loading data statistics...</div>';
             fetch('/api/data-statistics', {
                 method: 'POST',
                 headers: {
