@@ -34,11 +34,18 @@ USERS = {
     'user1': 'password123'
 }
 
+
+def is_user_logged_in():
+    if LOGGED_IN_USER != None and LOGGED_IN_USER in USERS:
+        session['user_id'] = LOGGED_IN_USER
+        return True
+    if 'user_id' in session:
+        return True
+    return False
+
 @app.route('/')
 def index():
-    if LOGGED_IN_USER != None:
-        session['user_id'] = LOGGED_IN_USER
-    if 'user_id' not in session:
+    if not is_user_logged_in():
        return redirect(url_for('login'))
     return render_template('index.html',body_class_name=BODY_CLASS_NAME)
 
@@ -63,7 +70,7 @@ def logout():
 
 @app.route('/api/upload-data', methods=['POST'])
 def upload_data():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     if 'file' not in request.files:
@@ -102,7 +109,7 @@ def upload_data():
 
 @app.route('/api/upload-model', methods=['POST'])
 def upload_model():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     if 'file' not in request.files:
@@ -150,7 +157,7 @@ def upload_model():
 
 @app.route('/api/get-results')
 def get_results():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     try:
@@ -199,7 +206,7 @@ def get_results():
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     data = request.json
@@ -227,7 +234,7 @@ def chat():
 
 @app.route('/api/create-sp100-model', methods=['POST'])
 def create_sp100_model():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     data = request.json
@@ -263,7 +270,7 @@ def create_sp100_model():
 
 @app.route('/api/train-model', methods=['POST'])
 def train_model():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     data = request.json
@@ -294,7 +301,7 @@ def train_model():
 
 @app.route('/api/data-statistics', methods=['POST'])
 def data_statistics():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     data = request.json
@@ -341,7 +348,7 @@ def data_statistics():
 
 @app.route('/api/preprocess-data', methods=['POST'])
 def preprocess_data():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     data = request.json
@@ -373,7 +380,7 @@ def preprocess_data():
 
 @app.route('/api/enhanced-xai', methods=['POST'])
 def enhanced_xai():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     try:
@@ -402,7 +409,7 @@ def enhanced_xai():
 
 @app.route('/api/download-finbert', methods=['POST'])
 def download_finbert():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     try:
@@ -424,7 +431,7 @@ def download_finbert():
 
 @app.route('/api/get-examples', methods=['POST'])
 def get_examples():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     try:
@@ -445,7 +452,7 @@ def get_examples():
 
 @app.route('/api/run-xai', methods=['POST'])
 def run_xai():
-    if 'user_id' not in session:
+    if not is_user_logged_in():
         return jsonify({'error': 'Not authenticated'}), 401
     
     data = request.json
