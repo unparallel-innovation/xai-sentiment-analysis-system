@@ -18,7 +18,7 @@ AI_OUTPUTS_SERVICE_URL = os.environ.get('AI_OUTPUTS_SERVICE_URL', 'http://ai_out
 SHARED_DATA_DIR = '/app/shared_data'
 
 LOGGED_IN_USER = os.environ.get("LOGGED_IN_USER")
-BODY_CLASS_NAME = os.environ.get("BODY_CLASS_NAME")
+BODY_CLASS_NAME = os.environ.get("BODY_CLASS_NAME") or ""
 UPLOAD_FOLDER = os.path.join(SHARED_DATA_DIR, 'uploads')
 MODELS_FOLDER = os.path.join(SHARED_DATA_DIR, 'models')
 RESULTS_FOLDER = os.path.join(SHARED_DATA_DIR, 'results')
@@ -40,7 +40,7 @@ def index():
         session['user_id'] = LOGGED_IN_USER
     if 'user_id' not in session:
        return redirect(url_for('login'))
-    return render_template('index.html',body_class_name=BODY_CLASS_NAME or "")
+    return render_template('index.html',body_class_name=BODY_CLASS_NAME)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
